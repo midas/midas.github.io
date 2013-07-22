@@ -16,4 +16,9 @@ group :development do
   gem 'liquid', '~> 2.3.0'
 end
 
+group :requires do
+  gem 'jekyll-slim'
+end
+
 gem 'sinatra', '~> 1.4.2'
+
