@@ -1,0 +1,10 @@
+---
+layout: default
+---
+
+<div class="archive-page-wrapper">
+  <h2>Posts In: {{ page.category }}</h2>
+  {% for post in site.categories[page.category] %}
+    {% include archive_post.html %}
+  {% endfor %}
+</div>
