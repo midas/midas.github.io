@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://midas.github.io/sitemap.xml 

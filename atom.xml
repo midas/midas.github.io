@@ -1,16 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[respond_to do |jason|]]></title>
   <link href="http://midas.github.io/atom.xml" rel="self"/>
   <link href="http://midas.github.io/"/>
-  <updated>2013-07-22T19:06:50-05:00</updated>
+  <updated>2014-03-04T22:02:47-06:00</updated>
   <id>http://midas.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
-    
+    <name><![CDATA[C. Jason Harrelson]]></name>
+    <email><![CDATA[cjharrelson@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[This Is Another Test Post]]></title>
+    <link href="http://midas.github.io/blog/2014/03/04/this-is-another-test-post/"/>
+    <updated>2014-03-04T20:41:00-06:00</updated>
+    <id>http://midas.github.io/blog/2014/03/04/this-is-another-test-post</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[test post]]></title>
+    <link href="http://midas.github.io/blog/2014/03/04/test-post/"/>
+    <updated>2014-03-04T19:48:00-06:00</updated>
+    <id>http://midas.github.io/blog/2014/03/04/test-post</id>
+    <content type="html"><![CDATA[<h2>This is something</h2>
+
+<p>Testing 1, 2, 3</p>
+
+<div>
+  <pre><code class='bash'>cd ~</code></pre>
+</div>
+
+
+
+
+<div>
+  <pre><code class='ruby'>def show
+  @widget = Widget(params[:id])
+  respond_to do |format|
+    format.html # show.html.erb
+    format.json { render json: @widget }
+  end
+end</code></pre>
+</div>
+
+
+
+]]></content>
+  </entry>
   
 </feed>
