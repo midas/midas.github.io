@@ -4,7 +4,7 @@
   <title><![CDATA[respond_to do |jason|]]></title>
   <link href="http://midas.github.io/atom.xml" rel="self"/>
   <link href="http://midas.github.io/"/>
-  <updated>2014-03-05T12:21:45-06:00</updated>
+  <updated>2014-03-05T12:24:34-06:00</updated>
   <id>http://midas.github.io/</id>
   <author>
     <name><![CDATA[C. Jason Harrelson]]></name>
@@ -26,7 +26,7 @@
 
 <h2>Tell Don&rsquo;t Ask Principle</h2>
 
-<p>Instead of asking an object a qustion about it&rsquo;s state, making a descision, and proceeding forward we should strive to tell an object what to do.</p>
+<p>Instead of asking an object a question about it&rsquo;s state, making a descision, and proceeding forward we should strive to tell an object what to do.</p>
 
 <blockquote><p>Procedural code gets information then makes decisions. Object-oriented code tells objects to do things.</p>
 
