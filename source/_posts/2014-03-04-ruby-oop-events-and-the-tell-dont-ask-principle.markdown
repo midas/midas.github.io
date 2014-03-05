@@ -16,7 +16,7 @@ It is obvious that events can help you write loosely coupled class and allow mul
 
 ## Tell Don't Ask Principle
 
-Instead of asking an object a qustion about it's state, making a descision, and proceeding forward we should strive to tell an object what to do.
+Instead of asking an object a question about it's state, making a descision, and proceeding forward we should strive to tell an object what to do.
 
 > Procedural code gets information then makes decisions. Object-oriented code tells objects to do things. 
 > 
@@ -24,7 +24,6 @@ Instead of asking an object a qustion about it's state, making a descision, and 
 
 Let's look at some simple examples of a Rails controller action:
 
- using the [wisper](https://github.com/krisleech/wisper) gem.
 #### Normal Rails Controller
 
 Here is an example you are sure to recognize as it is the normal way of writing a create action for a Rails controller.
@@ -49,7 +48,8 @@ class TasksController < ApplicationController
 end
 {% endhighlight %}
 
-This implementation is not good because we are examining the state of the created task to determine what to do next.  Not to mention, lots of complex logic, most of which has nothing to do with the HTTP protocol, is happening in the controller.
+This implementation is not good because we are examining the state of the created task to determine what to do next.  Not to mention, lots of business logic, which has nothing to do with the HTTP protocol, is happening in the controller.  How are you going to test it?
+
 
 #### Rails Controller Action With a Service Class Extracted
 
@@ -106,9 +106,13 @@ protected
 end
 {% endhighlight %}
 
-While we know that extracting complex logic out of the controller into another class is a good idea, this particular implementation is just plain ugly.  The root of the problem with this implementation is the controller is asking the service class about it's state and then telling it to do additional tasks.
+While we know that extracting complex logic out of the controller into another class is a good idea, this particular implementation is just plain ugly.  The problem with this implementation is the controller is asking the service class about it's state and then telling it to do additional tasks.
+
+#### Rails Controller Action With a Service Class Extracted Utilizing Events
 
 Why not let the service class tell the controller what happened?
+
+In the next example we will use the [wisper](https://github.com/krisleech/wisper) gem to allow the controller to subscribe to events the service class may publish.
 
 {% highlight ruby %}
 class CreateTaskService
