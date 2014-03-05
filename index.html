@@ -113,8 +113,6 @@ $(function(){
 
 <p>Let&rsquo;s look at some simple examples of a Rails controller action:</p>
 
-<p> using the <a href="https://github.com/krisleech/wisper">wisper</a> gem.</p>
-
 <h4>Normal Rails Controller</h4>
 
 <p>Here is an example you are sure to recognize as it is the normal way of writing a create action for a Rails controller.</p>
@@ -203,7 +201,11 @@ end</code></pre>
 
 <p>While we know that extracting complex logic out of the controller into another class is a good idea, this particular implementation is just plain ugly.  The root of the problem with this implementation is the controller is asking the service class about it&rsquo;s state and then telling it to do additional tasks.</p>
 
+<h4>Rails Controller Action With a Service Class Extracted Utilizing Events</h4>
+
 <p>Why not let the service class tell the controller what happened?</p>
+
+<p>In the next example we will use the <a href="https://github.com/krisleech/wisper">wisper</a> gem to allow the controller to subscribe to events the service class may publish.</p>
 
 <div>
   <pre><code class='ruby'>class CreateTaskService

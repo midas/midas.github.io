@@ -4,7 +4,7 @@
   <title><![CDATA[respond_to do |jason|]]></title>
   <link href="http://midas.github.io/atom.xml" rel="self"/>
   <link href="http://midas.github.io/"/>
-  <updated>2014-03-05T02:34:53-06:00</updated>
+  <updated>2014-03-05T02:38:26-06:00</updated>
   <id>http://midas.github.io/</id>
   <author>
     <name><![CDATA[C. Jason Harrelson]]></name>
@@ -33,8 +33,6 @@
 <p>— Alec Sharp</p></blockquote>
 
 <p>Let&rsquo;s look at some simple examples of a Rails controller action:</p>
-
-<p> using the <a href="https://github.com/krisleech/wisper">wisper</a> gem.</p>
 
 <h4>Normal Rails Controller</h4>
 
@@ -124,7 +122,11 @@ end</code></pre>
 
 <p>While we know that extracting complex logic out of the controller into another class is a good idea, this particular implementation is just plain ugly.  The root of the problem with this implementation is the controller is asking the service class about it&rsquo;s state and then telling it to do additional tasks.</p>
 
+<h4>Rails Controller Action With a Service Class Extracted Utilizing Events</h4>
+
 <p>Why not let the service class tell the controller what happened?</p>
+
+<p>In the next example we will use the <a href="https://github.com/krisleech/wisper">wisper</a> gem to allow the controller to subscribe to events the service class may publish.</p>
 
 <div>
   <pre><code class='ruby'>class CreateTaskService
