@@ -5,7 +5,7 @@ date: 2014-03-04 22:11
 comments: true
 categories: 
 - ruby
-- solid
+- oop
 ---
 
 ## Background
