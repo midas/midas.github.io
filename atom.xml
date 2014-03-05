@@ -4,7 +4,7 @@
   <title><![CDATA[respond_to do |jason|]]></title>
   <link href="http://midas.github.io/atom.xml" rel="self"/>
   <link href="http://midas.github.io/"/>
-  <updated>2014-03-05T02:38:26-06:00</updated>
+  <updated>2014-03-05T12:21:45-06:00</updated>
   <id>http://midas.github.io/</id>
   <author>
     <name><![CDATA[C. Jason Harrelson]]></name>
@@ -59,7 +59,7 @@ end</code></pre>
 </div>
 
 
-<p>This implementation is not good because we are examining the state of the created task to determine what to do next.  Not to mention, lots of complex logic, most of which has nothing to do with the HTTP protocol, is happening in the controller.</p>
+<p>This implementation is not good because we are examining the state of the created task to determine what to do next.  Not to mention, lots of business logic, which has nothing to do with the HTTP protocol, is happening in the controller.  How are you going to test it?</p>
 
 <h4>Rails Controller Action With a Service Class Extracted</h4>
 
@@ -120,7 +120,7 @@ end</code></pre>
 </div>
 
 
-<p>While we know that extracting complex logic out of the controller into another class is a good idea, this particular implementation is just plain ugly.  The root of the problem with this implementation is the controller is asking the service class about it&rsquo;s state and then telling it to do additional tasks.</p>
+<p>While we know that extracting complex logic out of the controller into another class is a good idea, this particular implementation is just plain ugly.  The problem with this implementation is the controller is asking the service class about it&rsquo;s state and then telling it to do additional tasks.</p>
 
 <h4>Rails Controller Action With a Service Class Extracted Utilizing Events</h4>
 
