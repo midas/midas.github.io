@@ -1,0 +1,16 @@
+.hljs, article code, article pre, figure.code, figure.code table {
+  background: #33332D !important;
+}
+pre.line-numbers {
+  color: #666 !important;
+}
+p code {
+  background-color: #ededc0 !important;
+}
+div > div.gist-data.gist-syntax > div > table > tbody > tr > td.line-data {
+  background: #efefef !important;
+  width: 100%;
+}
+div > div.gist-data.gist-syntax > div {
+  background: #efefef !important;
+}
