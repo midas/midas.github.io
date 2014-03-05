@@ -14,7 +14,7 @@ Ignoring the existence of events in a program leads to harder to understand/debu
 
 It is obvious that events can help you write loosely coupled class and allow multiple objects to subscribe to a single event.  However, events can also help you conform to the Tell, Don't Ask Principle.
 
-## Tell Don't Ask Principle
+## Tell, Don't Ask Principle
 
 Instead of asking an object a question about it's state, making a descision, and proceeding forward we should strive to tell an object what to do.
 
