@@ -4,7 +4,7 @@
   <title><![CDATA[respond_to do |jason|]]></title>
   <link href="http://midas.github.io/atom.xml" rel="self"/>
   <link href="http://midas.github.io/"/>
-  <updated>2014-03-05T15:32:51-06:00</updated>
+  <updated>2014-03-05T15:33:38-06:00</updated>
   <id>http://midas.github.io/</id>
   <author>
     <name><![CDATA[C. Jason Harrelson]]></name>
@@ -12,17 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Service Classes, Workflows and the Chain of Responsibility Pattern]]></title>
-    <link href="http://midas.github.io/blog/2014/03/05/service-classes-workflows-and-the-chain-of-responsibility-pattern/"/>
-    <updated>2014-03-05T15:23:10-06:00</updated>
-    <id>http://midas.github.io/blog/2014/03/05/service-classes-workflows-and-the-chain-of-responsibility-pattern</id>
-    <content type="html"><![CDATA[<h2>Background</h2>
-
-<p>I have recently been utilizing service classes to extract business logic from Rails controllers into a more appropriate and testable class.  Enter the service class.</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ruby, OOP, Events and the Tell Don't Ask Principle]]></title>
