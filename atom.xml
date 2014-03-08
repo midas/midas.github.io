@@ -4,7 +4,7 @@
   <title><![CDATA[respond_to do |jason|]]></title>
   <link href="http://midas.github.io/atom.xml" rel="self"/>
   <link href="http://midas.github.io/"/>
-  <updated>2014-03-05T19:20:56-06:00</updated>
+  <updated>2014-03-07T21:39:30-06:00</updated>
   <id>http://midas.github.io/</id>
   <author>
     <name><![CDATA[C. Jason Harrelson]]></name>
@@ -12,6 +12,216 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How I Design Rails Applications: Part 1]]></title>
+    <link href="http://midas.github.io/blog/2014/03/07/how-i-design-rails-applications-part-1/"/>
+    <updated>2014-03-07T18:56:30-06:00</updated>
+    <id>http://midas.github.io/blog/2014/03/07/how-i-design-rails-applications-part-1</id>
+    <content type="html"><![CDATA[<p>I have been thinking and experimenting with different techniques to make Rails applications manageable as they grow for about 2 years now.  This exercise is not because I desire to add layers/complexity to my Rails applications, but because I have experienced the pain that a Rails application can provide as it matures.  In this multi-part series I will break down some of the successful techniques I am using to achieve my goals.</p>
+
+<p>One of my starting places was this <a href="http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/">article by Bryan Helmkamp</a>.  I will often reference this article in this series.  Thanks Bryan for sharing your techniques.</p>
+
+<p>I agree with Bryan the suggestion to make &ldquo;fat models&rdquo; is not a best practice.  The model should not contain logic that does not directly correspond to reading/writing to the database.</p>
+
+<h2>Part 1</h2>
+
+<p>The first technique Bryan discusses in his article is to &ldquo;Extract Value Objects.&rdquo;  According to Bryan, value objects are, &ldquo;simple objects whose equality is dependent on their value rather than an identity.&rdquo;  This is an important conecpt taken from domain driven design.  In his book on DDD, Eric Evans states: &ldquo;Many objects have no conceptual identity.  These objects describe characteristics of a thing.&rdquo;</p>
+
+<p>A great example of a value object is color:</p>
+
+<div>
+  <pre><code class='ruby'>class Color
+  include Comparable
+
+  def initialize(key)
+    @key = key
+  end
+
+  def &lt;=&gt;(other)
+    other.to_s &lt;=&gt; to_s
+  end
+
+  def eql?(other)
+    to_s == other.to_s
+  end
+
+  def to_s
+    @key.to_s
+  end
+end</code></pre>
+</div>
+
+
+<h2>Value Objects in the Model</h2>
+
+<p>It is common practice for developers to define value objects in a model, usually as a constant in the model.</p>
+
+<div>
+  <pre><code class='ruby'>class Car &lt; ActiveRecord::Base
+  COLOR = %w(
+    black
+    blue
+    green
+  )
+end</code></pre>
+</div>
+
+
+<p>This practice is not good because the value object may be used in attribute(s) of a model, but has nothing directly to do with the domain the model is representing.  Defining value objects inline in the model class carries the at least following disadvantages:</p>
+
+<ul>
+<li>Impossible to add functionality to value object without further polluting the model</li>
+<li>Limits reuse of the value object</li>
+<li>Harder to test</li>
+</ul>
+
+
+<h2>Value Objects in the Database</h2>
+
+<p>Quite often, developers will include value objects in the database as a model.  This is also bad form.  The value object is not dynamic so it does not necessitate use of the database.  In addition, the value object has no identity, so we do not need a keying system.  The only value the database really provides in this case is the limiting of the valid values for a value object to some predefined set that can be enforced.</p>
+
+<h2>Enumerative Gem</h2>
+
+<p>Enter the <a href="https://github.com/ninja-loss/enumerative">enumerative gem</a>.  This gem was authored by <a href="https://github.com/njonsson">Nils Jonsson</a> and myself.  The enumerative gem provides the tools necessary to create value objects that are limited to a finite set of valid values.</p>
+
+<p>An enumeration for color might be implemented like:</p>
+
+<div>
+  <pre><code class='ruby'>class Color
+
+  def self.valid_keys
+    %w(
+      black
+      blue
+      green
+    )
+  end
+
+  include Enumerative::Enumeration
+
+end</code></pre>
+</div>
+
+
+<p>In addition, you must add the translations for the enumeration&rsquo;s values to the <code>config/en.yml</code> file:</p>
+
+<div>
+  <pre><code class='ruby'>en:
+  enumerations:
+    color:
+      black: Black
+      blue: Blue
+      green: Green</code></pre>
+</div>
+
+
+<p>Now you can use the enumeration.</p>
+
+<div>
+  <pre><code class='ruby'>Color::BLACK # #&lt;Color:0x000001015e6aa8 @key=&quot;black&quot;&gt;
+Color::BLACK.key # &quot;black&quot;
+Color::BLACK.value # &quot;Black&quot;
+Color.to_select # [[&quot;Black&quot;, &quot;black&quot;], [&quot;Blue&quot;, &quot;blue&quot;], [&quot;Green&quot;, &quot;green&quot;]]
+Color.new(&#39;black&#39;).valid? # true
+Color.new(&#39;some invalid value&#39;).valid? # false</code></pre>
+</div>
+
+
+<p>The initiatlizer is very forgiving of the values it will accept so that it can be used to easily standardize input, etc.</p>
+
+<div>
+  <pre><code class='ruby'>Color.new(Color::BLACK) # #&lt;Color:0x000001015e7aa0 @key=&quot;black&quot;&gt;
+Color.new(&#39;black&#39;) # #&lt;Color:0x000001015e7aa0 @key=&quot;black&quot;&gt;
+Color.new(key: &#39;black&#39;) # #&lt;Color:0x000001015e7aa0 @key=&quot;black&quot;&gt;
+Color.new(key: :black) # #&lt;Color:0x000001015e7aa0 @key=&quot;black&quot;&gt;</code></pre>
+</div>
+
+
+<h4>HasEnumeration Module</h4>
+
+<p>It gets even more exciting when you want to use it in a model.  If you included the <code>Enumerative::HasEnumeration</code> module you get automatic casting from the key that is stored in the database to the type of the enumeration your attribute is defined as on a read and back to the key for storage on a write.</p>
+
+<div>
+  <pre><code class='ruby'>class Car &lt; ActiveRecord::Base
+  include Enumerative::HasEnumeration
+
+  has_enumeration color, from: Color
+end</code></pre>
+</div>
+
+
+<p>Convenience when you read from the database:</p>
+
+<div>
+  <pre><code class='ruby'>car = Car.first
+car.color_before_type_cast # &quot;black&quot;
+car.color # #&lt;Color:0x000001015e7aa0 @key=&quot;black&quot;&gt;</code></pre>
+</div>
+
+
+<p>Convenience when you write to the database</p>
+
+<div>
+  <pre><code class='ruby'>car = Car.new
+car.color = Color::BLACK
+color.save!
+car.reload
+car.color_before_type_cast # &quot;black&quot;
+car.color # #&lt;Color:0x000001015e7aa0 @key=&quot;black&quot;&gt;</code></pre>
+</div>
+
+
+<h4>Testing Enumerations</h4>
+
+<p>Enumerative provides some a shared spec for easier specing of enumerations.  Following is an example spec for the color enumeration.</p>
+
+<div>
+  <pre><code class='ruby'>require &#39;spec_helper&#39;
+require &#39;enumerative/enumeration_sharedspec&#39;
+
+describe Color do
+
+  it_should_behave_like &#39;an Enumeration&#39;
+
+  def self.keys
+    %w(
+      black
+      blue
+      green
+    )
+  end
+
+  self.keys.each do |key|
+    const = key.upcase
+
+    it &quot;should have #{const}&quot; do
+      described_class.const_get( const ).should be_valid
+    end
+  end
+
+  it &quot;should have the correct select-box values&quot; do
+    described_class.to_select.should == [
+      [&quot;Black&quot;, &quot;black&quot;],
+      [&quot;Blue&quot;, &quot;blue&quot;],
+      [&quot;Green&quot;, &quot;green&quot;]
+    ]
+  end
+end</code></pre>
+</div>
+
+
+<h2>Project Organization</h2>
+
+<p>I recommend placing enumerations in the <code>app/enumerations</code> directory.</p>
+
+<h2>Conclusion</h2>
+
+<p>With very little effort we have extracted our value object out of the database and retained the ability to limit the valid values to a finite set.  We can also use our value object in a model and persist the model&rsquo;s value for the enumeration in the database.  Most importantly, we have successfully removed a common contributer to making Rails models bloated and unmanageable.</p>
+
+<p>Stay tuned for the next installment in the series.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ruby, OOP, Events and the Tell Don't Ask Principle]]></title>
