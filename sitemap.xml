@@ -2,20 +2,22 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>
-            http://midas.github.io/blog/2014/03/04/ruby-oop-events-and-the-tell-dont-ask-principle/
+            http://blog.jasonharrelson.com/blog/2014/03/04/ruby-oop-events-and-the-tell-dont-ask-principle/
         </loc>
         <lastmod>2014-03-05T15:12:54-06:00</lastmod>
     </url>
     <url>
-        <loc>http://midas.github.io/blog/2014/03/07/how-i-design-rails-applications-part-1/</loc>
+        <loc>
+            http://blog.jasonharrelson.com/blog/2014/03/07/how-i-design-rails-applications-part-1/
+        </loc>
         <lastmod>2014-03-07T21:37:33-06:00</lastmod>
     </url>
     <url>
-        <loc>http://midas.github.io/blog/archives/</loc>
+        <loc>http://blog.jasonharrelson.com/blog/archives/</loc>
         <lastmod>2014-03-07T21:37:33-06:00</lastmod>
     </url>
     <url>
-        <loc>http://midas.github.io/</loc>
+        <loc>http://blog.jasonharrelson.com/</loc>
         <lastmod>2014-03-07T21:37:33-06:00</lastmod>
     </url>
 </urlset>

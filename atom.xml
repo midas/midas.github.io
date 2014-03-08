@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[respond_to do |jason|]]></title>
-  <link href="http://midas.github.io/atom.xml" rel="self"/>
-  <link href="http://midas.github.io/"/>
-  <updated>2014-03-07T21:39:30-06:00</updated>
-  <id>http://midas.github.io/</id>
+  <link href="http://blog.jasonharrelson.com/atom.xml" rel="self"/>
+  <link href="http://blog.jasonharrelson.com/"/>
+  <updated>2014-03-07T22:12:14-06:00</updated>
+  <id>http://blog.jasonharrelson.com/</id>
   <author>
     <name><![CDATA[C. Jason Harrelson]]></name>
-    <email><![CDATA[cjharrelson@gmail.com]]></email>
+    
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[How I Design Rails Applications: Part 1]]></title>
-    <link href="http://midas.github.io/blog/2014/03/07/how-i-design-rails-applications-part-1/"/>
+    <link href="http://blog.jasonharrelson.com/blog/2014/03/07/how-i-design-rails-applications-part-1/"/>
     <updated>2014-03-07T18:56:30-06:00</updated>
-    <id>http://midas.github.io/blog/2014/03/07/how-i-design-rails-applications-part-1</id>
+    <id>http://blog.jasonharrelson.com/blog/2014/03/07/how-i-design-rails-applications-part-1</id>
     <content type="html"><![CDATA[<p>I have been thinking and experimenting with different techniques to make Rails applications manageable as they grow for about 2 years now.  This exercise is not because I desire to add layers/complexity to my Rails applications, but because I have experienced the pain that a Rails application can provide as it matures.  In this multi-part series I will break down some of the successful techniques I am using to achieve my goals.</p>
 
 <p>One of my starting places was this <a href="http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/">article by Bryan Helmkamp</a>.  I will often reference this article in this series.  Thanks Bryan for sharing your techniques.</p>
@@ -225,9 +225,9 @@ end</code></pre>
   
   <entry>
     <title type="html"><![CDATA[Ruby, OOP, Events and the Tell Don't Ask Principle]]></title>
-    <link href="http://midas.github.io/blog/2014/03/04/ruby-oop-events-and-the-tell-dont-ask-principle/"/>
+    <link href="http://blog.jasonharrelson.com/blog/2014/03/04/ruby-oop-events-and-the-tell-dont-ask-principle/"/>
     <updated>2014-03-04T22:11:00-06:00</updated>
-    <id>http://midas.github.io/blog/2014/03/04/ruby-oop-events-and-the-tell-dont-ask-principle</id>
+    <id>http://blog.jasonharrelson.com/blog/2014/03/04/ruby-oop-events-and-the-tell-dont-ask-principle</id>
     <content type="html"><![CDATA[<h2>Background</h2>
 
 <p>Ignoring the existence of events in a program leads to harder to understand/debug code.  Events implicitly exist in all programs and if not explicitly utilized do not go away.</p>
