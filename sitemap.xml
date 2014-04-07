@@ -8,16 +8,22 @@
     </url>
     <url>
         <loc>
-            http://blog.jasonharrelson.com/blog/2014/03/07/how-i-design-rails-applications-part-1/
+            http://blog.jasonharrelson.com/blog/2014/03/07/how-i-design-rails-applications-part-1-value-objects/
         </loc>
-        <lastmod>2014-03-07T21:37:33-06:00</lastmod>
+        <lastmod>2014-04-06T22:48:34-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://blog.jasonharrelson.com/blog/2014/04/06/how-i-design-rails-applications-part-2-form-objects/
+        </loc>
+        <lastmod>2014-04-06T22:52:53-05:00</lastmod>
     </url>
     <url>
         <loc>http://blog.jasonharrelson.com/blog/archives/</loc>
-        <lastmod>2014-03-07T21:37:33-06:00</lastmod>
+        <lastmod>2014-04-06T22:52:53-05:00</lastmod>
     </url>
     <url>
         <loc>http://blog.jasonharrelson.com/</loc>
-        <lastmod>2014-03-07T21:37:33-06:00</lastmod>
+        <lastmod>2014-04-06T22:52:53-05:00</lastmod>
     </url>
 </urlset>

@@ -1,0 +1,326 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>How I Design Rails Applications Part 2: Form Objects - respond_to do |jason|</title>
+	<meta name="author" content="C. Jason Harrelson">
+
+	
+	<meta name="description" content="How I Design Rails Applications Part 2: Form Objects Apr 6th, 2014 In part 2 of this series I am going to discuss the use of form objects. Just as &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="respond_to do |jason|" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://blog.jasonharrelson.com/blog/2014/04/06/how-i-design-rails-applications-part-2-form-objects/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/railscasts.min.css">
+<!--<link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/default.min.css">-->
+<!--<link rel="stylesheet" href="https://raw.github.com/isagalaev/highlight.js/master/src/styles/railscasts.css">-->
+<!--<link rel="stylesheet" href="https://raw.github.com/isagalaev/highlight.js/master/src/styles/default.css">-->
+<script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+<!--<script src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>-->
+<!--<script src="https://raw.github.com/isagalaev/highlight.js/master/src/highlight.js"></script>-->
+<!--<script src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>-->
+<!--<script src="javascripts/highlight.js"></script>-->
+
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><nav id="main-nav"><ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a class="rss" href="/atom.xml" title="RSS">RSS</a></li>
+  <li><a href="https://github.com/midas">Github</a></li>
+  <li><a href="http://www.linkedin.com/in/cjharrelson">About Me</a></li>
+</ul>
+</nav>
+<!-- <nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		<a class="twitter" href="http://twitter.com/@cjharrelson" title="Twitter">Twitter</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav> -->
+<div class="profile-container">
+  <div class="profilepic">
+    <script src="/javascripts/md5.js"></script>
+    <script type="text/javascript">
+$(function(){
+  $('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("cjharrelson@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+});
+    </script>
+  </div>
+  <hgroup>
+  <h1 class="site-title"><a href="/">respond_to do |jason|</a></h1>
+  
+  </hgroup>
+  Included file 'custom/header.html' not found in _includes directory
+</div>
+</header>
+			</div>
+		</div>
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="article-inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  
+	<h1 class="title" itemprop="name">How I Design Rails Applications Part 2: Form Objects</h1>
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+  <div class="post-date"><time datetime="2014-04-06T19:01:23-05:00" data-updated="true" itemprop="datePublished">Apr 6<span>th</span>, 2014</time></div>
+	<div class="entry-content" itemprop="articleBody"><p>In part 2 of this series I am going to discuss the use of form objects.  Just as in the last installment I drew my inspiration from this <a href="http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/">article by Bryan Helmkamp</a>.  As a warning, I believe the form object is probably the most misunderstood pattern contained in Bryan&rsquo;s article.  One needs to immediately decouple the form object from the concept of a UI form (more on this later).</p>
+
+<h2>What is a Form Object and Why Should I Use It?</h2>
+
+<p>A form object is the abstraction of operations that should occur when saving a record within a system, business logic if you will.  The form object provides many benefits, some of which are:</p>
+
+<ul>
+<li>Abstracts the responsibility of create/update of a model(s) to some other class for a better separation of concerns</li>
+<li>A layer of indirection between your application and the persistence library being used</li>
+<li>Eliminates validation spaghetti (a la ActiveRecord validations, etc)</li>
+<li>Allows for more control of how to save associated (nested) objects</li>
+</ul>
+
+
+<p>While ORMs like ActiveRecord provide a means to persist to a DB by generating SQL, validate attributes, accepts_nested_attributes_for in order to save associated &ldquo;nested&rdquo; objects, and many other features, it does not mean you should use them all.  An ORM should know how to read/write data to a database, period.  Once you start layering all of these other concerns into the &ldquo;model,&rdquo; you get yourself into trouble quickly.  I believe that most of the pain I have experienced with mature Rails applications is a result of this overlaying of concerns in a single class.</p>
+
+<h3>Abstracts the responsibility of create/update of a model(s) to some other class for a better separation of concerns</h3>
+
+<p>A form object can be considered a type of decorator for your models.  Just as you may use a presenter (a type of decorator) for logic that is not directly related to your data model but more for presentation, you would use a form object for functionality that is not directly related to your data model, but more to the business logic you would like to include in the create/update operations for your model.</p>
+
+<p>Specific examples of this business logic are validation of attributes, creation of associated (nested) records, etc.</p>
+
+<h3>A layer of indirection between your application and the persistence library being used</h3>
+
+<p>Providing a layer (adapter) between your application and ORM is something that most people scoff at due to the unlikeliness of needing to change ORMs in the lifetime of a project.  I myself might have subscribed to this line of thought a mere year ago.  However, I have experienced the bite of this issue first hand now.  A project I am working on had a requirement for a distributed data model injected late in the project.  After analyzing how hard it would be to move from a RDBMS to a document database that has eventual consistency out of the box, like Cassandra, we determined that we could not achieve the refactor of the persistence layer in time to deliver the project.  The reason for this is the application is tightly coupled to the persistence layer.  If we simply had one level of indirection built into the persistence layer using something like form and query objects, we could have easily acheived a move to Cassandra.</p>
+
+<p>Many developers employ the data repository pattern in order to provide a level of indirection between their application logic and ORM classes.  An alternaive to this pattern is to use form and query objects.  I will cover query objects in the next installment of this series.  I prefer for and query objects over a data respository because the repository usually grows to be a rather large monolithic class in itself.  Form and query objects allow for the encapsulation of a single domain operation per class.</p>
+
+<h3>Eliminates validation spaghetti (a la ActiveRecord validations, etc)</h3>
+
+<p>The easiest way to explain this is through an example.  Given a user model that is used to register a new user and also to manage the user&rsquo;s profile.</p>
+
+<div>
+  <pre><code class='ruby'>class User &lt; ActiveRecord::Base
+
+  attr_accessor :registering
+
+  validates_presence_of :password, if: :registering?
+  validates_presence_of :password_confirmation, if: :password_present?
+
+protected
+
+  def registering?
+    registering
+  end
+
+  def password_present?
+    password.present?
+  end
+
+end</code></pre>
+</div>
+
+
+<p>Even in this simple example you can see how it get hard to determine when valdiations will execute.  Imagine adding more concerns/features that the user model is handling with even more conditional validations.  The object quickly becomes brittle and even a slight change could result in lots of broken specs.</p>
+
+<p>Why does all of this logic have to live in a single class?  The following is a better implementation.</p>
+
+<div>
+  <pre><code class='ruby'>class User &lt; ActiveRecord::Base
+end
+
+class UserRegistrationForm &lt; Reform::Form # from gem apotonick/reform
+
+  property :email
+  property :password
+  property :password_confirmation
+
+  validates :email, 
+            :password, 
+            :password_confirmation, presence: true
+
+end</code></pre>
+</div>
+
+
+<p>When you are registering a user, you can use the UserRegistrationForm.  If you need a form for updating the user&rsquo;s additional profile elements you might implement a form like the following.</p>
+
+<div>
+  <pre><code class='ruby'>class UserProfileUpdateForm &lt; Reform::Form # from gem apotonick/reform
+
+  property :name
+  property :phone_number
+  property :age
+
+  validates :age, numericality: true
+
+end</code></pre>
+</div>
+
+
+<p>Each of the form objects above implements the business rules necessary to perform a create/update operation within a specific context.  This makes the business logic contained in each much more explicit and easier to follow.</p>
+
+<h3>Allows for more control of how to save associated (nested) objects</h3>
+
+<p>Persisting complex object graphs through a single method call is a highly desirable level of abstraction for any application.  However, ActiveRecord&rsquo;s <a href="http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html">accepts_nested_attributes_for</a> feature is an abomination and should be deprecated from ActiveRecord.  Why should a model be concerned with how to persist its associated models?</p>
+
+<p>Form objects can also help clean up this complex task.  Given a project that has many tasks you may implement a form for project creation that allows for one or more initial tasks to be defined.</p>
+
+<div>
+  <pre><code class='ruby'>class Project &lt; ActiveRecord::Base
+  has_many :tasks
+end
+
+class Task &lt; ActiveRecord::Base
+  belongs_to :project
+end
+
+class ProjectCreationForm &lt; Reform::Form # from gem apotonick/reform
+
+  property :name
+  validates :name, presence: true
+
+  property :due_on
+
+  collection :tasks do
+    property :description
+    validates :description, presence: true
+
+    property :due_on
+  end
+
+  def save
+    Project.transaction do
+      # save project
+      # save tasks
+    end
+  end
+
+end</code></pre>
+</div>
+
+
+<p>The above implementation is much more explict and much less magic involved than accepts_nested_attributes_for.  If there is a problem, it will be much easier to track down what is going on.  Not to mention, when using the ProjectCreationForm we can be sure that only a project and one or more tasks can be created.  With accepts_nested_attributes_for, we could accidentally create other associated objects if our attributes hash happened to have stray attributes in it providing an opportunity for a bug that would be hard to track down.  This is due to smashing too many concerns into a single class.  The more concerns that build up in the class, the more opportunites that bugs will occur.</p>
+
+<h2>Form Objects are Not Always Used with a UI Form</h2>
+
+<p>The sooner one realizes that a form object is not always used in conjunction with a UI form the quicker one will begin to understand the form object&rsquo;s true place within a system.  Following are some of the situations in which you might use a form object:</p>
+
+<ul>
+<li>In the Rails console when you want to create a valid record</li>
+<li>In the create or update action for a REST API</li>
+<li>When importing records from a flat file</li>
+</ul>
+
+
+<p>If you use forms correctly there is no longer a need to define any validations on your ActiveRecord model classes.  If this makes you feel uncomforatble, ask yourself why?  To truly have a layer of indirection between the application and ORM, you should only directly use the ActiveRecord model layer within the form and query objects when employing this pattern.</p>
+
+<h2>The Reform Gem</h2>
+
+<p>When implementing form objects, I prefer to use the <a href="https://github.com/apotonick/reform">reform gem by apotonick</a>.  It already has a very well thought out and designed API and it is still a pre 1.0 release.  A bonus feature with this gem is it plays nicely with <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html">Rails&#8217; built-in form builders</a> and 3rd party form builders <a href="https://github.com/justinfrench/formtastic">formtastic</a> and <a href="https://github.com/plataformatec/simple_form">simple_form</a>.  You can pass the form object to these builders in place of the model and everything will work as expected.</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="share_icon_group addthis_toolbox addthis_default_style addthis_32x32_style">
+	
+  <a class="share_icon addthis_button_preferred_1"></a>
+	
+	
+	<a class="share_icon addthis_button_preferred_2" fb:like:layout="button_count"></a>
+	
+	
+	<a class="share_icon addthis_button_preferred_4"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">
+<p>Theme: <a href="https://github.com/qingwang/octopress-theme-yinyang">YinYang</a></p>
+</footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'respondtodojason';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.jasonharrelson.com/blog/2014/04/06/how-i-design-rails-applications-part-2-form-objects/';
+        var disqus_url = 'http://blog.jasonharrelson.com/blog/2014/04/06/how-i-design-rails-applications-part-2-form-objects/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>
